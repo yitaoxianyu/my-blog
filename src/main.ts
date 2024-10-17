@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
-import 'element-plus/dist/index.css'; 
+import 'element-plus/dist/index.css';
+import '@fortawesome/fontawesome-free/css/all.css';
 import App from './App.vue'
 import ElementPlue from 'element-plus'
 import router from './router'
