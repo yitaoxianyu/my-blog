@@ -1,3 +1,8 @@
 export const url = {
-    home : "/home"   
+    home : "/home",
+    passageBytime : "/timeline",
+    passageBytype : "/category",
+    passageBytag : "/tag",
+    log : "/log",
+    abountMe : "/me"   
 }

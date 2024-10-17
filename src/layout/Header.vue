@@ -7,20 +7,46 @@
         :popper-offset="16"
         style="max-width: 100vw"
       >
-        <el-menu-item index="1" v-on:click="handleNavigate(url.home)">返回首页</el-menu-item>
+        <el-menu-item index="1" v-on:click="handleNavigate(url.home)">
+            <i class="fa-solid fa-house menu-item-avatar"></i>
+            <span>
+                返回首页
+            </span>
+        </el-menu-item>
         <el-sub-menu index="2" :popper-offset="8">
-          <template #title>我的文章</template>
-          <el-menu-item index="2-1">事件轴</el-menu-item>
-          <el-menu-item index="2-2">分类</el-menu-item>
-          <el-menu-item index="2-3">标签</el-menu-item>
+            <template #title>
+             <i class="fa-solid fa-book menu-item-avatar"></i>
+             <span>
+                我的文章
+             </span>
+            </template>
+          <el-menu-item index="2-1" v-on:click="handleNavigate(url.passageBytime)">事件轴</el-menu-item>
+          <el-menu-item index="2-2" v-on:click="handleNavigate(url.passageBytype)">分类</el-menu-item>
+          <el-menu-item index="2-3" v-on:click="handleNavigate(url.passageBytag)">标签</el-menu-item>
         </el-sub-menu>
-        <el-menu-item index="3">日志</el-menu-item>
-        <el-menu-item index="4">关于我</el-menu-item>
+        <el-menu-item index="3" v-on:click="handleNavigate(url.log)">
+            <i class="fa-solid fa-bookmark menu-item-avatar"></i>
+            <span>
+                日志
+            </span>
+        </el-menu-item>
+        <el-menu-item index="4" v-on:click="handleNavigate(url.abountMe)">
+            <i class="fa-solid fa-person menu-item-avatar"></i>
+            <span>
+                关于我
+            </span>
+        </el-menu-item>
         <el-menu-item index="5" class="menu-item-github">
           <span>GitHub</span> <!-- 可选的文本 -->
-          <a href="https://github.com/yitaoxianyu" class="github-link">
+          <a href="https://github.com/yitaoxianyu" class="github-link" style="font-size: 30px;">
             <i class="fa-brands fa-github"></i>
           </a>
+        </el-menu-item>
+        <el-menu-item style="margin-left: auto;">
+            <i class="fa-solid fa-door-closed menu-item-avatar"></i>
+            <span>
+                登录
+            </span>
         </el-menu-item>
       </el-menu>
     </div>
@@ -38,8 +64,10 @@
   </script>
   
   <style>
+  .menu-item-avatar{
+    margin-right: 20px;
+  }
   .menu-item-github {
-    display: flex;
     align-items: center; /* 垂直居中 */
     justify-content: flex-end; /* 右对齐 */
   }
