@@ -4,5 +4,6 @@ export const url = {
     passageBytype : "/category",
     passageBytag : "/tag",
     log : "/log",
-    abountMe : "/me"   
+    abountMe : "/me",
+    login : "/login",
 }

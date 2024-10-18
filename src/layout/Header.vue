@@ -42,7 +42,7 @@
             <i class="fa-brands fa-github"></i>
           </a>
         </el-menu-item>
-        <el-menu-item style="margin-left: auto;">
+        <el-menu-item style="margin-left: 720px;" @click="handleNavigate(url.login)">
             <i class="fa-solid fa-door-closed menu-item-avatar"></i>
             <span>
                 登录

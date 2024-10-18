@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import test2 from '@/components/test2.vue'
-import Header from '@/layout/Header.vue';
 import Loading from './components/Loading.vue';
-
+import Header from './layout/Header.vue';
 
 
 </script>
 
 <template>
-<test2/>
+<Header />
+<router-view />
 </template>
 
 <style scoped>

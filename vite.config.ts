@@ -9,5 +9,14 @@ export default defineConfig({
     alias: { //配置路径别名
       '@': path.resolve(__dirname, 'src')
     }
-  }
+  },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8080/admin', // 后端服务器地址
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ''), // 可选：重写路径
+      },
+    },
+  },
 })
