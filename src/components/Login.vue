@@ -26,22 +26,32 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, withDirectives } from 'vue';
 import axios from 'axios';
 import {UserFilled} from '@element-plus/icons-vue';
 
 const userName = ref('');
 const password = ref('');
 
-async function handleLogin() {
-  const response = await axios.get('user/user/login', {
-        params: {
-          username: userName.value,
-          password: password.value,
-        }
-      }
-  )
+async function handleLogin(){
+  try {
+    const response = await axios.get('/user/user/login',
+    {
+      params : {
+        username : userName.value,
+        password : password.value,
+      },
+      withCredentials : true
+    });
+    const data = response.data; // 获取返回的数据
+    console.log('返回的数据:', data);
+  } catch (error) {
+    console.error('请求失败:', error);
+  }
 }
+
+
+
 
 </script>
 
