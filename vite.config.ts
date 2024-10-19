@@ -13,9 +13,9 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:8080/admin', // 后端服务器地址
+        target: 'http://localhost:8080', // 后端服务器地址
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ''), // 可选：重写路径
+        rewrite: (path) => path.replace(/^\/api/, '/admin'), // 可选：重写路径
       },
       '/user': {
         target: 'http://localhost:8080', // 基本 URL

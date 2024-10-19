@@ -10,50 +10,47 @@
           label-width="auto"
           class="demo-ruleForm"
         >
-          <el-form-item label="Password" prop="pass">
-            <el-input v-model="ruleForm.pass" type="password" autocomplete="off" />
+          <el-form-item label="用户名" prop="username">
+            <el-input v-model="ruleForm.username" />
           </el-form-item>
-          <el-form-item label="Confirm" prop="checkPass">
+          <el-form-item label="密码" prop="password">
+            <el-input v-model="ruleForm.password" type="text" autocomplete="off" style="width: 400px;"/>
+          </el-form-item>
+          <el-form-item label="确认密码" prop="checkPassword">
             <el-input
-              v-model="ruleForm.checkPass"
+              v-model="ruleForm.checkPassword"
               type="password"
               autocomplete="off"
             />
           </el-form-item>
-          <el-form-item label="Age" prop="age">
-            <el-input v-model.number="ruleForm.age" />
-          </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="submitForm(ruleFormRef)">
-              Submit
+              提交
             </el-button>
-            <el-button @click="resetForm(ruleFormRef)">Reset</el-button>
+            <el-button @click="resetForm(ruleFormRef)">清空</el-button>
           </el-form-item>
         </el-form>
       </div>
       <!-- 可以在这里添加其他内容 -->
-      <div class="additional-content">
-        <p>这是其他内容，可以放在父级元素中。</p>
-      </div>
     </div>
   </template>
   
   <script lang="ts" setup>
   import { reactive, ref } from 'vue'
   import type { FormInstance, FormRules } from 'element-plus'
+  import axios from 'axios';
   
   const ruleFormRef = ref<FormInstance>()
   
-  const checkAge = (rule: any, value: any, callback: any) => {
+  const checkUsername = (rule: any, value: any, callback: any) => {
     if (!value) {
-      return callback(new Error('Please input the age'))
+      return callback(new Error('请输入用户名'))
     }
     setTimeout(() => {
-      if (!Number.isInteger(value)) {
-        callback(new Error('Please input digits'))
-      } else {
-        if (value < 18) {
-          callback(new Error('Age must be greater than 18'))
+     {
+       if(value.includes(' ')) callback(new Error('含有非法字符(空格)'))
+        if (value.length >= 10) {
+          callback(new Error('用户名长度不超过10位'))
         } else {
           callback()
         }
@@ -62,46 +59,62 @@
   }
   
   const validatePass = (rule: any, value: any, callback: any) => {
-    if (value === '') {
-      callback(new Error('Please input the password'))
+    if (!value) {
+      return callback(new Error('请输入密码'))
     } else {
-      if (ruleForm.checkPass !== '') {
-        if (!ruleFormRef.value) return
-        ruleFormRef.value.validateField('checkPass')
-      }
-      callback()
+        setTimeout(() => {
+            if(value.includes(' ')) return callback(new Error('含有非法字符(空格)'))
+            if(value.length >= 16) return callback(new Error('密码过长,不超过16位'))
+            callback();
+        },1000)
     }
   }
   
-  const validatePass2 = (rule: any, value: any, callback: any) => {
+  const validateCheckPassword = (rule: any, value: any, callback: any) => {
     if (value === '') {
-      callback(new Error('Please input the password again'))
-    } else if (value !== ruleForm.pass) {
-      callback(new Error("Two inputs don't match!"))
-    } else {
-      callback()
+      return callback(new Error('请确认密码'))
+    } else{
+        setTimeout(() => {
+            if(value !== ruleForm.password) return callback(new Error('两次密码不一致'));
+            callback()
+        },1000)
     }
   }
   
   const ruleForm = reactive({
-    pass: '',
-    checkPass: '',
-    age: '',
+    password: '',
+    checkPassword: '',
+    username: '',
   })
   
   const rules = reactive<FormRules<typeof ruleForm>>({
-    pass: [{ validator: validatePass, trigger: 'blur' }],
-    checkPass: [{ validator: validatePass2, trigger: 'blur' }],
-    age: [{ validator: checkAge, trigger: 'blur' }],
+    password: [{ validator: validatePass, trigger: 'blur' }],
+    checkPassword: [{ validator: validateCheckPassword, trigger: 'blur' }],
+    username: [{ validator: checkUsername, trigger: 'blur' }],
   })
   
   const submitForm = (formEl: FormInstance | undefined) => {
     if (!formEl) return
-    formEl.validate((valid) => {
+    formEl.validate(async (valid) => {
       if (valid) {
-        console.log('submit!')
+        try{
+            const response = await axios.post('/notify/register',
+                {
+                    username : ruleForm.username,
+                    password : ruleForm.password,
+                },
+                {
+                    withCredentials:true,
+                    timeout:5000,
+                }
+            )
+            const data = response.data
+            console.log("返回的数据:",data)
+        }catch(e){
+            
+        }
       } else {
-        console.log('error submit!')
+        console.log('存在非法字段!')
       }
     })
   }
@@ -124,15 +137,10 @@
   .input-field-container {
     display: flex;
     justify-content: center; /* 水平居中内容 */
-    width: 100%; /* 使输入框容器宽度为100% */
+    align-items: center;
     max-width: 600px; /* 限制最大宽度 */
+    height: 100vh;
   }
   
-  .additional-content {
-    position: absolute; /* 绝对定位的内容 */
-    top: 10px; /* 可以根据需要调整位置 */
-    right: 10px; /* 可以根据需要调整位置 */
-    color: #333; /* 其他内容的样式 */
-  }
   </style>
   
