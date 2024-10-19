@@ -22,6 +22,11 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/user/, '/user'), // 保持路径不变
       },
+      '/notify': {
+        target: 'http://localhost:8080', // 基本 URL
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/notify/, '/notify'), // 保持路径不变
+      },
     },
   },
 })

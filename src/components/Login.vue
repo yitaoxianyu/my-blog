@@ -8,6 +8,7 @@
               class="input-field"
               placeholder="请输入用户名"
               :prefix-icon="UserFilled"
+              size="large"
           />
         </el-col>
         <el-col>
@@ -17,9 +18,12 @@
               type="password"
               placeholder="请输入密码"
               show-password
+              size="large"
+              
           />
         </el-col>
-        <el-button type="primary" @click="handleLogin">登录</el-button>
+        <el-button type="primary" @click="handleLogin" style="width: 180px; height: 30px; margin-bottom: 10px;" plain>登录</el-button>
+        <el-button type="success"  @click="navigateToRegister" style="width: 180px; height: 30px; margin-left: 0; margin-top: 10px;" plain>注册</el-button>
       </div>
     </el-row>
   </div>
@@ -27,31 +31,49 @@
 
 <script lang="ts" setup>
 import { ref, withDirectives } from 'vue';
-import axios from 'axios';
+import axios , {AxiosError} from 'axios';
 import {UserFilled} from '@element-plus/icons-vue';
+import { useRouter } from 'vue-router';
+import { url } from '@/constants/url';
 
+const router = useRouter()
 const userName = ref('');
 const password = ref('');
 
-async function handleLogin(){
+async function handleLogin(): Promise<void> {
   try {
-    const response = await axios.get('/user/user/login',
-    {
-      params : {
-        username : userName.value,
-        password : password.value,
-      },
-      withCredentials : true
-    });
+    const response = await axios.post('/notify/login', 
+      {
+        username: userName.value,
+        password: password.value,
+      }, 
+      {
+        withCredentials: true, // 确保携带凭证
+        timeout: 5000 // 设置超时时间为 5000 毫秒 (5 秒)
+      }
+    );
+
     const data = response.data; // 获取返回的数据
     console.log('返回的数据:', data);
-  } catch (error) {
-    console.error('请求失败:', error);
+  } catch (error) { // 不设置 error 的类型
+    // 检查是否是 AxiosError
+    if (axios.isAxiosError(error)) {
+      if (error.code === 'ECONNABORTED') {
+        console.error('请求超时:', error.message);
+      } else {
+        console.error('请求失败:', error.message);
+      }
+    } else {
+      console.error('发生错误:', error); // 处理其他类型的错误
+    }
   }
+  userName.value = ''
+  password.value = ''
 }
 
-
-
+function navigateToRegister(){
+    router.push(url.reg);
+}
 
 </script>
 
@@ -64,14 +86,14 @@ async function handleLogin(){
 }
 
 .input-field {
-  width: 240px; /* 设置输入框宽度 */
+  width: 400px; /* 设置输入框宽度 */
   margin-bottom: 20px; /* 设置输入框之间的间距 */
 }
 
 .button-container {
   display: flex;
   flex-direction: column; /* 垂直排列输入框和按钮 */
-  align-items: center; /* 水平居中 */
+  align-items: center;
 }
 </style>
   
