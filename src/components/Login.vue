@@ -19,7 +19,6 @@
               placeholder="请输入密码"
               show-password
               size="large"
-              
           />
         </el-col>
         <el-button type="primary" @click="handleLogin" style="width: 180px; height: 30px; margin-bottom: 10px;" plain>登录</el-button>
