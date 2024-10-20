@@ -132,8 +132,8 @@
             )
             const data = response.data
             console.log("返回的数据:",data)
-        }catch(e){
-          
+        }catch(e : any){
+            console.log('错误信息:',e)
         }
         finally{
           formEl.resetFields()
@@ -149,8 +149,21 @@
     formEl.resetFields()
   }
 
-  const handleSendEmail = () =>{
-
+  const handleSendEmail = async () =>{
+    //email发送到后端
+    try{
+      const response = await axios.post(`/notify/captcha/${ruleForm.email}`,
+      {},
+      {
+        withCredentials: true,
+      }
+    )
+    const data = response.data
+    console.log('返回的数据:',data)
+    }catch(e : any){
+      console.log('错误信息:',e)
+    }
+   
   }
 
   </script>
