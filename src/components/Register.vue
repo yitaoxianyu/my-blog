@@ -47,6 +47,7 @@
   import { reactive, ref } from 'vue'
   import type { Callback, FormInstance, FormRules } from 'element-plus'
   import axios from 'axios';
+  import {ElMessage} from 'element-plus';
   
   const ruleFormRef = ref<FormInstance>()
   
@@ -124,6 +125,8 @@
                 {
                     username : ruleForm.username,
                     password : ruleForm.password,
+                    email: ruleForm.email,
+                    captcha: ruleForm.captcha,
                 },
                 {
                     withCredentials:true,
@@ -131,9 +134,13 @@
                 }
             )
             const data = response.data
+            ElMessage({
+                message: '注册成功！',
+                type: 'success',
+            })//消息提示
             console.log("返回的数据:",data)
         }catch(e : any){
-            console.log('错误信息:',e)
+            console.log('错误信息:',e.message)
         }
         finally{
           formEl.resetFields()
@@ -152,8 +159,11 @@
   const handleSendEmail = async () =>{
     //email发送到后端
     try{
-      const response = await axios.post(`/notify/captcha/${ruleForm.email}`,
-      {},
+      const response = await axios.post(`/notify/captcha`,
+      {
+        email:ruleForm.email,
+        username:ruleForm.username,
+      },
       {
         withCredentials: true,
       }
@@ -161,7 +171,7 @@
     const data = response.data
     console.log('返回的数据:',data)
     }catch(e : any){
-      console.log('错误信息:',e)
+      console.log('错误信息:',e.message)
     }
    
   }
