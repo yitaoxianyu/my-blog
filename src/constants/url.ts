@@ -10,6 +10,5 @@ export const url = {
     abountMe : "/me",
     login : "/login",
 
-    user:"user",
-    admin:"admin",
+    dashboard:"/dashboard",
 }

@@ -10,18 +10,18 @@
           label-width="auto"
           class="demo-ruleForm"
         >
+        <!-- 火狐浏览器自动填充不做适配 -->
           <el-form-item label="用户名" prop="username">
-            <el-input v-model="ruleForm.username" />
+            <el-input v-model="ruleForm.username"/>
           </el-form-item>
           <el-form-item label="密码" prop="password">
-            <el-input v-model="ruleForm.password" type="text" autocomplete="off" style="width: 400px;" show-password 
+            <el-input v-model="ruleForm.password" type="text" style="width: 400px;" show-password 
             pattern="^[^\u4e00-\u9fa5]*$" title="密码不能包含汉字"/>
           </el-form-item>
           <el-form-item label="确认密码" prop="checkPassword">
             <el-input
               v-model="ruleForm.checkPassword"
               type="password"
-              autocomplete="off"
             />
           </el-form-item>
           <el-form-item label="邮箱" prop="email">

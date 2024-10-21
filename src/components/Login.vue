@@ -39,13 +39,14 @@
 <!-- 用户名和密码缺少限制功能 -->
 
 <script lang="ts" setup>
-import { reactive, ref, withDirectives } from 'vue';
+import { reactive, ref, withDirectives, nextTick } from 'vue';
 import axios , {AxiosError} from 'axios';
 import {UserFilled} from '@element-plus/icons-vue';
 import { useRouter } from 'vue-router';
 import { url } from '@/constants/url';
 import { FormInstance , ElMessage } from 'element-plus';
-
+import useUserStore from '@/stores/User';
+import DashBoard from './DashBoard.vue';
 
 const router = useRouter()
 const ruleFormRef = ref<FormInstance>();
@@ -54,6 +55,7 @@ const ruleForm = reactive({
   username: '',
   password: '', 
 })
+const userStore = useUserStore();
 
 async function handleLogin(formEI : FormInstance | undefined): Promise<void> {
   if(!formEI) return ;
@@ -77,6 +79,11 @@ async function handleLogin(formEI : FormInstance | undefined): Promise<void> {
           message : "登录成功",
           type : "success",
         })
+        const token = data.data.token
+        sessionStorage.setItem('token',token);
+        userStore.setUserType(data.data.role);
+        await nextTick();
+        router.push({name : 'dashboard'});
     }
     else{
       const message = response.data.msg;

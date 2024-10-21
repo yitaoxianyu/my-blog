@@ -1,3 +1,4 @@
+import { componentSizeMap } from 'element-plus';
 import {createRouter, createWebHistory, routerKey} from 'vue-router'
 
 const routes = [
@@ -17,14 +18,10 @@ const routes = [
         component:() => import('@/components/Register.vue')
     },
     {
-        path:'/user',
-        name:'user',
-        component:() => import('@/components/dashboard/UserDashBoard.vue')
-    },
-    {
-        path:'/admin',
-        name:'name',
-        comopnent : () => import('@/components/dashboard/UserDashBoard.vue')
+        path:'/dashboard',
+        name:'dashboard',
+        component:() => import('@/components/DashBoard.vue')
+
     }
 ]
 
