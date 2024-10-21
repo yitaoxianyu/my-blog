@@ -1,50 +1,68 @@
 <template>
-  <div class="login-container"> <!-- 使用 Flexbox 容器 -->
-    <el-row justify="center" align="middle" style="height: 100vh;"> <!-- 让行高为视口高度 -->
-      <div class="button-container">
+  <div class="login-container">
+    <el-row justify="center" align="middle" style="height: 100vh;">
+      <el-form ref="ruleFormRef" :model="ruleForm" label-width="0" class="button-container">
         <el-col>
-          <el-input
-              v-model="userName"
+          <el-form-item prop="userName">
+            <el-input
+              v-model="ruleForm.username"
               class="input-field"
               placeholder="请输入用户名"
               :prefix-icon="UserFilled"
               size="large"
-          />
+            />
+          </el-form-item>
         </el-col>
         <el-col>
-          <el-input
-              v-model="password"
+          <el-form-item prop="password">
+            <el-input
+              v-model="ruleForm.password"
               class="input-field"
               type="password"
               placeholder="请输入密码"
               show-password
               size="large"
-          />
+              pattern="^[^\u4e00-\u9fa5]*$"
+              title="密码不能包含汉字"
+            />
+          </el-form-item>
         </el-col>
-        <el-button type="primary" @click="handleLogin" style="width: 180px; height: 30px; margin-bottom: 10px;" plain>登录</el-button>
-        <el-button type="success"  @click="navigateToRegister" style="width: 180px; height: 30px; margin-left: 0; margin-top: 10px;" plain>注册</el-button>
-      </div>
+        <el-form-item>
+          <el-button type="primary" @click="handleLogin(ruleFormRef)" style="width: 180px; height: 30px;" plain>登录</el-button>
+          <el-button type="success" @click="navigateToRegister()" style="width: 180px; height: 30px;" plain>注册</el-button>
+        </el-form-item>
+      </el-form>
     </el-row>
   </div>
 </template>
 
+<!-- 用户名和密码缺少限制功能 -->
+
 <script lang="ts" setup>
-import { ref, withDirectives } from 'vue';
+import { reactive, ref, withDirectives } from 'vue';
 import axios , {AxiosError} from 'axios';
 import {UserFilled} from '@element-plus/icons-vue';
 import { useRouter } from 'vue-router';
 import { url } from '@/constants/url';
+import { FormInstance , ElMessage } from 'element-plus';
+
 
 const router = useRouter()
-const userName = ref('');
-const password = ref('');
+const ruleFormRef = ref<FormInstance>();
 
-async function handleLogin(): Promise<void> {
+const ruleForm = reactive({
+  username: '',
+  password: '', 
+})
+
+async function handleLogin(formEI : FormInstance | undefined): Promise<void> {
+  if(!formEI) return ;
+  //这里应该先进行校验
   try {
     const response = await axios.post('/notify/login', 
       {
-        username: userName.value,
-        password: password.value,
+        username: ruleForm.username,
+        password: ruleForm.password,
       }, 
       {
         withCredentials: true, // 确保携带凭证
@@ -52,22 +70,33 @@ async function handleLogin(): Promise<void> {
       }
     );
 
-    const data = response.data; // 获取返回的数据
+    const data = response.data
+    const status = response.data.code; // 获取返回的数据
+    if(status){
+      ElMessage({
+          message : "登录成功",
+          type : "success",
+        })
+    }
+    else{
+      const message = response.data.msg;
+      ElMessage({
+        message:message,
+        type:"error",
+      })
+    }    
     console.log('返回的数据:', data);
-  } catch (error) { // 不设置 error 的类型
+    //todo:这里将返回的token，设置到Sessionstorage
+  } catch (error : any) { // 不设置 error 的类型
     // 检查是否是 AxiosError
     if (axios.isAxiosError(error)) {
-      if (error.code === 'ECONNABORTED') {
-        console.error('请求超时:', error.message);
-      } else {
-        console.error('请求失败:', error.message);
-      }
-    } else {
-      console.error('发生错误:', error); // 处理其他类型的错误
+        ElMessage({
+          message:'服务器异常',
+          type:'info',
+        })
     }
-  }
-  userName.value = ''
-  password.value = ''
+    else console.log('未知错误')
+  } 
 }
 
 function navigateToRegister(){

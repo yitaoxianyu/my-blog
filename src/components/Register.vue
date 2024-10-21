@@ -14,7 +14,8 @@
             <el-input v-model="ruleForm.username" />
           </el-form-item>
           <el-form-item label="密码" prop="password">
-            <el-input v-model="ruleForm.password" type="text" autocomplete="off" style="width: 400px;" show-password/>
+            <el-input v-model="ruleForm.password" type="text" autocomplete="off" style="width: 400px;" show-password 
+            pattern="^[^\u4e00-\u9fa5]*$" title="密码不能包含汉字"/>
           </el-form-item>
           <el-form-item label="确认密码" prop="checkPassword">
             <el-input
@@ -113,7 +114,9 @@
       {validator:validateEmail,trigger:'blur'},
       {type:'email',message:'邮箱格式不正确',trigger:'blur'}
     ],
-    captcha:[{len:6,message:'验证码格式不正确',trigger:'blur'}]
+    captcha:[{len:6,message:'验证码格式不正确',trigger:'blur'},
+      {required:true,message:'请输入验证码',trigger:'blur'}
+    ]
   })
   
   const submitForm = (formEl: FormInstance | undefined) => {
@@ -140,7 +143,14 @@
             })//消息提示
             console.log("返回的数据:",data)
         }catch(e : any){
-            console.log('错误信息:',e.message)
+          ElMessage({
+                message: '注册失败！',
+                type: 'error',
+            })//消息提示
+            if(e.response){
+              console.log("服务器错误:",e.response.data.msg)
+            }
+            else console.log("错误信息:",e.message)
         }
         finally{
           formEl.resetFields()
@@ -171,7 +181,10 @@
     const data = response.data
     console.log('返回的数据:',data)
     }catch(e : any){
-      console.log('错误信息:',e.message)
+      if(e.response){
+        console.log("服务器错误:",e.response.data.msg)
+      }
+      else console.log('错误信息:',e.message)
     }
    
   }
